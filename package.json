@@ -1,0 +1,11 @@
+{
+  "name": "tree-sitter-plplus",
+  "version": "0.0.1",
+  "description": "Грамматика tree-sitter для языка PL/Plus платформы ЦФТ",
+  "license": "MIT",
+  "keywords": ["tree-sitter", "parser", "plplus", "pl/plus", "cft"],
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "build-wasm": "tree-sitter build-wasm"
+  }
+}

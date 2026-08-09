@@ -1,0 +1,19 @@
+{
+  "grammars": [
+    {
+      "name": "plplus",
+      "path": ".",
+      "scope": "source.plplus",
+      "file-types": [
+        "plp",
+        "pls"
+      ],
+      "injection-regex": "^plplus$"
+    }
+  ],
+  "metadata": {
+    "version": "0.0.1",
+    "license": "MIT",
+    "description": "PL/Plus grammar for tree-sitter"
+  }
+}
