@@ -425,6 +425,16 @@
           }
         ]
       },
+      "identity": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
       "name": {
         "multiple": false,
         "required": true,
@@ -469,6 +479,10 @@
           "named": true
         },
         {
+          "type": "kw_by",
+          "named": true
+        },
+        {
           "type": "kw_class",
           "named": true
         },
@@ -481,11 +495,27 @@
           "named": true
         },
         {
+          "type": "kw_identified",
+          "named": true
+        },
+        {
           "type": "kw_is",
           "named": true
         },
         {
+          "type": "kw_nested",
+          "named": true
+        },
+        {
+          "type": "kw_preserve",
+          "named": true
+        },
+        {
           "type": "kw_standalone",
+          "named": true
+        },
+        {
+          "type": "kw_temporary",
           "named": true
         },
         {
@@ -5552,6 +5582,10 @@
     "named": true
   },
   {
+    "type": "kw_identified",
+    "named": true
+  },
+  {
     "type": "kw_if",
     "named": true
   },
@@ -5648,6 +5682,10 @@
     "named": true
   },
   {
+    "type": "kw_nested",
+    "named": true
+  },
+  {
     "type": "kw_nmemo",
     "named": true
   },
@@ -5733,6 +5771,10 @@
   },
   {
     "type": "kw_pragma",
+    "named": true
+  },
+  {
+    "type": "kw_preserve",
     "named": true
   },
   {
@@ -5853,6 +5895,10 @@
   },
   {
     "type": "kw_table",
+    "named": true
+  },
+  {
+    "type": "kw_temporary",
     "named": true
   },
   {

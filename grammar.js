@@ -180,6 +180,10 @@ const KW = {
   EXTENDS: caseInsensitive('extends'),
   COLLECTION: caseInsensitive('collection'),
   STANDALONE: caseInsensitive('standalone'),
+  NESTED: caseInsensitive('nested'),
+  TEMPORARY: caseInsensitive('temporary'),
+  PRESERVE: caseInsensitive('preserve'),
+  IDENTIFIED: caseInsensitive('identified'),
   METHOD: caseInsensitive('method'),
   ATTRIBUTE: caseInsensitive('attribute'),
   EXECUTE: caseInsensitive('execute'),
@@ -256,6 +260,11 @@ module.exports = grammar({
     kw_extends: $ => KW.EXTENDS,
     kw_collection: $ => KW.COLLECTION,
     kw_standalone: $ => KW.STANDALONE,
+    kw_nested: $ => KW.NESTED,
+    kw_temporary: $ => KW.TEMPORARY,
+    kw_preserve: $ => KW.PRESERVE,
+    kw_identified: $ => KW.IDENTIFIED,
+    kw_by: $ => KW.BY,
     kw_method: $ => KW.METHOD,
     kw_attribute: $ => KW.ATTRIBUTE,
     kw_batch: $ => KW.BATCH,
@@ -442,8 +451,13 @@ module.exports = grammar({
     class_declaration: $ => seq(
       repeat($.decorator),
       optional($.kw_abstract),
+      // `temporary class X { … }` и `temporary preserve class X { … }` —
+      // временный класс, живущий в пределах сеанса.
+      optional(seq($.kw_temporary, optional($.kw_preserve))),
       $.kw_class,
       field('name', $.name_or_placeholder),
+      // `class X identified by CLS { … }` — колонка-идентификатор экземпляра.
+      optional(seq($.kw_identified, $.kw_by, field('identity', $.identifier))),
       choice(
         // Simple class declaration: class NAME;
         ';',
@@ -467,9 +481,10 @@ module.exports = grammar({
         ),
         // Collection class: class NAME is collection [TYPE];
         // Collection class: class NAME is standalone collection [TYPE];
+        // class NAME is [standalone|nested] collection [TYPE];
         seq(
           $.kw_is,
-          optional($.kw_standalone),
+          optional(choice($.kw_standalone, $.kw_nested)),
           $.kw_collection,
           field('element_type', $.class_identifier),
           ';'

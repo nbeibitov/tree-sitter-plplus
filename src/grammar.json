@@ -93,6 +93,26 @@
       "type": "PATTERN",
       "value": "[sS][tT][aA][nN][dD][aA][lL][oO][nN][eE]"
     },
+    "kw_nested": {
+      "type": "PATTERN",
+      "value": "[nN][eE][sS][tT][eE][dD]"
+    },
+    "kw_temporary": {
+      "type": "PATTERN",
+      "value": "[tT][eE][mM][pP][oO][rR][aA][rR][yY]"
+    },
+    "kw_preserve": {
+      "type": "PATTERN",
+      "value": "[pP][rR][eE][sS][eE][rR][vV][eE]"
+    },
+    "kw_identified": {
+      "type": "PATTERN",
+      "value": "[iI][dD][eE][nN][tT][iI][fF][iI][eE][dD]"
+    },
+    "kw_by": {
+      "type": "PATTERN",
+      "value": "[bB][yY]"
+    },
     "kw_method": {
       "type": "PATTERN",
       "value": "[mM][eE][tT][hH][oO][dD]"
@@ -278,10 +298,6 @@
     "kw_order": {
       "type": "PATTERN",
       "value": "[oO][rR][dD][eE][rR]"
-    },
-    "kw_by": {
-      "type": "PATTERN",
-      "value": "[bB][yY]"
     },
     "kw_select": {
       "type": "PATTERN",
@@ -951,6 +967,35 @@
           ]
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "kw_temporary"
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "kw_preserve"
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "SYMBOL",
           "name": "kw_class"
         },
@@ -961,6 +1006,35 @@
             "type": "SYMBOL",
             "name": "name_or_placeholder"
           }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "kw_identified"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "kw_by"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "identity",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "CHOICE",
@@ -1060,8 +1134,17 @@
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "SYMBOL",
-                      "name": "kw_standalone"
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "kw_standalone"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "kw_nested"
+                        }
+                      ]
                     },
                     {
                       "type": "BLANK"
