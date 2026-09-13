@@ -5,8 +5,7 @@
       "path": ".",
       "scope": "source.plplus",
       "file-types": [
-        "plp",
-        "pls"
+        "plp"
       ],
       "injection-regex": "^plplus$"
     }
