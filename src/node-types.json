@@ -708,6 +708,10 @@
           "named": true
         },
         {
+          "type": "kw_instead_of",
+          "named": true
+        },
+        {
           "type": "kw_is",
           "named": true
         },
@@ -1195,6 +1199,10 @@
         },
         {
           "type": "kw_end",
+          "named": true
+        },
+        {
+          "type": "kw_instead_of",
           "named": true
         },
         {
@@ -2191,6 +2199,11 @@
     "fields": {}
   },
   {
+    "type": "kw_rowid",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "kw_set",
     "named": true,
     "fields": {}
@@ -2557,6 +2570,10 @@
         },
         {
           "type": "kw_end",
+          "named": true
+        },
+        {
+          "type": "kw_instead_of",
           "named": true
         },
         {
@@ -2937,6 +2954,11 @@
   },
   {
     "type": "pct_id",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "pct_rowid",
     "named": true,
     "fields": {}
   },
@@ -4955,6 +4977,10 @@
           "named": true
         },
         {
+          "type": "pct_rowid",
+          "named": true
+        },
+        {
           "type": "pct_rowtable",
           "named": true
         },
@@ -5602,6 +5628,10 @@
     "named": true
   },
   {
+    "type": "kw_instead_of",
+    "named": true
+  },
+  {
     "type": "kw_integer",
     "named": true
   },
@@ -5827,10 +5857,6 @@
   },
   {
     "type": "kw_rollback",
-    "named": true
-  },
-  {
-    "type": "kw_rowid",
     "named": true
   },
   {

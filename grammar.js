@@ -194,6 +194,10 @@ const KW = {
   LIBRARY: caseInsensitive('library'),
   BATCH: caseInsensitive('batch'),
   USES: caseInsensitive('uses'),
+  // `instead of` — один токен, а не два ключевых слова: пара `instead` + `of`
+  // в трёх определениях разом переполняла таблицу разбора tree-sitter
+  // (66 073 действия при пределе 65 535).
+  INSTEAD_OF: /[iI][nN][sS][tT][eE][aA][dD]\s+[oO][fF]/,
   IMMEDIATE: caseInsensitive('immediate'),
   USING: caseInsensitive('using')
 };
@@ -269,6 +273,7 @@ module.exports = grammar({
     kw_attribute: $ => KW.ATTRIBUTE,
     kw_batch: $ => KW.BATCH,
     kw_uses: $ => KW.USES,
+    kw_instead_of: $ => KW.INSTEAD_OF,
     kw_execute: $ => KW.EXECUTE,
     kw_immediate: $ => KW.IMMEDIATE,
     kw_using: $ => KW.USING,
@@ -538,7 +543,7 @@ module.exports = grammar({
       field('name', $.name_or_placeholder),
       optional($.parameter_list),
       optional($.return_type),
-      optional(seq($.kw_uses, field('base', $.type_identifier))),
+      optional(seq(choice($.kw_uses, $.kw_instead_of), field('base', $.type_identifier))),
       $.kw_is,
       optional($.method_body_declarations),
       optional($.method_interface),
@@ -606,7 +611,7 @@ module.exports = grammar({
     constructor_definition: $ => seq(
       repeat($.decorator),
       $.kw_constructor, field('name', $.name_or_placeholder),
-      optional(seq($.kw_uses, field('base', $.type_identifier))),
+      optional(seq(choice($.kw_uses, $.kw_instead_of), field('base', $.type_identifier))),
       $.kw_is,
       optional($.method_body_declarations),  // declarations before method interface (public vars, types, etc.)
 
@@ -625,7 +630,7 @@ module.exports = grammar({
     destructor_definition: $ => seq(
       repeat($.decorator),
       $.kw_destructor, field('name', $.name_or_placeholder),
-      optional(seq($.kw_uses, field('base', $.type_identifier))),
+      optional(seq(choice($.kw_uses, $.kw_instead_of), field('base', $.type_identifier))),
       $.kw_is,
       optional($.method_body_declarations),  // declarations before method interface
 
@@ -757,11 +762,13 @@ module.exports = grammar({
         optional(seq('(', $.number, optional(seq(',', $.number)), ')'))
       ))),
       // Oracle типы с размером: varchar2(size), char(size), string(size), number(p,s)
-      // Размер опционален: varchar2 или varchar2(32000)
+      // Размер опционален: varchar2 или varchar2(32000); может быть макросом —
+      // varchar2(&BUF_SIZE), raw(&BUF_SIZE) после pragma macro(BUF_SIZE, 5120)
       prec(3, seq(choice($.kw_varchar, $.kw_varchar2, $.kw_char, $.kw_nchar, $.kw_nvarchar2, $.kw_raw,
                  $.kw_string, $.kw_nstring),
-          optional(seq('(', $.number, optional(choice($.kw_byte, $.kw_char)), ')')))),
-      prec(3, seq($.kw_number, optional(seq('(', $.number, optional(seq(',', $.number)), ')')))),
+          optional(seq('(', choice($.number, $.macro_substitution), optional(choice($.kw_byte, $.kw_char)), ')')))),
+      prec(3, seq($.kw_number, optional(seq('(', choice($.number, $.macro_substitution),
+          optional(seq(',', choice($.number, $.macro_substitution))), ')')))),
       $.type_identifier,
       seq($.kw_ref, $.type_identifier),
       // %type/%rowtype/%rowtable for qualified type paths.
@@ -786,6 +793,10 @@ module.exports = grammar({
     pct_rowtype: $ => token(seq('%', caseInsensitive('rowtype'))),
     pct_rowtable: $ => token(seq('%', caseInsensitive('rowtable'))),
     pct_id: $ => token(seq('%', caseInsensitive('id'))),
+    // `%rowid` отдельным токеном: `rowid` — ключевое слово типа (kw_rowid),
+    // и в modifier_name его не положить; а `x%rowid` в select/where — живой
+    // код (Rec%rowid : C_RID, where Rec%rowid = …).
+    pct_rowid: $ => token(seq('%', caseInsensitive('rowid'))),
 
     variable_declaration: $ => seq(
       repeat($.decorator),
@@ -1512,6 +1523,7 @@ module.exports = grammar({
       prec.left(11, seq($.variable, $.pct_rowtable, optional(seq('(', sep1($.expression, ','), ')')))),
       prec.left(11, seq($.variable, $.pct_type, optional(seq('(', sep1($.expression, ','), ')')))),
       prec.left(11, seq($.variable, $.pct_id, optional(seq('(', sep1($.expression, ','), ')')))),
+      prec.left(11, seq($.variable, $.pct_rowid)),
       // Collection/array indexing: collection(idx) or func(args)
       prec.left(12, seq($.variable, '(', optional($.expression_list), ')'))
     ),
