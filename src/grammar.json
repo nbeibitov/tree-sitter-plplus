@@ -10731,6 +10731,19 @@
             {
               "type": "SYMBOL",
               "name": "plplus_exists_select"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "plplus_with_clause"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "plplus_exists_select"
+                }
+              ]
             }
           ]
         },

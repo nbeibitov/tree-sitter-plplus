@@ -1392,6 +1392,10 @@
           "named": true
         },
         {
+          "type": "plplus_with_clause",
+          "named": true
+        },
+        {
           "type": "select_syntax",
           "named": true
         }

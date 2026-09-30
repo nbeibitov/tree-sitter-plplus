@@ -1451,7 +1451,14 @@ module.exports = grammar({
        choice($.kw_null, $.kw_nan, $.kw_infinite, $.kw_empty, seq($.kw_set, $.variable), seq($.kw_member, $.kw_of, $.expression), seq($.kw_submultiset, $.kw_of, $.expression))
     )),
     
-    exists_expression: $ => seq($.kw_exists, '(', choice($.select_syntax, $.plplus_exists_select), ')'),
+    // exists (with recursive CTE(...) as (...) select dep(1) in CTE ...) — так
+    // в представлениях VID_DEPOSIT (DEPN): без with-ветки не разбирался весь .vw,
+    // и представление пропадало из индекса.
+    exists_expression: $ => seq($.kw_exists, '(', choice(
+      $.select_syntax,
+      $.plplus_exists_select,
+      seq($.plplus_with_clause, $.plplus_exists_select)
+    ), ')'),
 
     // PL/Plus collection select inside EXISTS: select x(x) in collection[, (collection all : alias)] [all] where ...
     plplus_exists_select: $ => seq(
